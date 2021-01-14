@@ -1,4 +1,5 @@
 // Requiring all modules to be used
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
@@ -6,6 +7,8 @@ const mongoose = require('mongoose');
 const encrypt = require('mongoose-encryption');
 
 const app = express();
+
+console.log(process.env.API_KEY);
 
 // Stuff for EJS, Express, and body-parser
 app.use(express.static("public"));
@@ -23,9 +26,8 @@ const userSchema = new mongoose.Schema({
   password: String
 });
 
-// Creating secret string for mongoose-encryption encryption. NOTE: Must include this BEFORE making the model
-const secret = "Thisisourlittlesecret.";
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] });
+// Creating secret string(NOTE: This secret string got moved to .env file) for mongoose-encryption encryption. NOTE: Must include this BEFORE making the model
+userSchema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ['password'] });
 
 const User = new mongoose.model("User", userSchema);
 
